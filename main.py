@@ -20,17 +20,18 @@ Builder.load_string('''
             ScreenManager:
     
                 Screen:
-    
-                    BoxLayout:
+                    MDTabs:
+                        id: tabs
+                    MDBottomAppBar:
                         orientation: 'vertical'
     
                         MDToolbar:
                             id: toolbar
                             title: "ЦУК"
+                            type: "bottom"
                             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-                        MDTabs:
-                            id: tabs
-    
+                   
+
                         Widget:
     
     
@@ -38,6 +39,7 @@ Builder.load_string('''
                 id: nav_drawer
     
                 ContentNavigationDrawer:
+                    id: con_nav_drawer
             
 <ItemDrawer>:
     theme_text_color: "Custom"
@@ -79,6 +81,7 @@ Builder.load_string('''
         height: self.texture_size[1]
 
     ScrollView:
+        id: scr
         DrawerList:
             id: md_list
             
@@ -98,13 +101,7 @@ Builder.load_string('''
             
             
 <Tab>:
-    MDFlatButton:
-        adaptive_height: True
-        id: but
-        text: "MDRAISEDBUTTON"
-        text_color: 0, 0, 1, 1
-        md_bg_color: 1, 1, 1, 1
-        on_release: root.pop()
+    
 '''
 )
 
@@ -160,19 +157,23 @@ class MainApp(MDApp):
         self.root.ids.tabs.add_widget(Tab(text=f"Екатерина"))
         self.root.ids.tabs.add_widget(Tab(text=f"Виктория"))
 
-        #TODO
-        # Разобраться, как получить доступ к элементу класса
-        # icons_item = {
-        #     "folder": "My files",
-        #     "account-multiple": "Shared with me",
-        #     "star": "Starred",
-        #     "history": "Recent",
-        #     "checkbox-marked": "Shared with me",
-        #     "upload": "Upload",
-        # }
-        # for icon_name in icons_item.keys():
-        #     self.root.ids.md_list.add_widget(
-        #         ItemDrawer(icon=icon_name, text=icons_item[icon_name])
-        #     )
+        # Разобрался, как получить доступ к элементу класса
+        # Для доступа к сторонним классам в основном создается объект этого лкасса, ему дается индетификатор
+        # и после этого, через его id можно получить доступ к его ids
+        icons_item = {
+            "folder": "My files",
+            "account-multiple": "Shared with me",
+            "star": "Starred",
+            "history": "Recent",
+            "checkbox-marked": "Shared with me",
+            "upload": "Upload",
+        }
+        for icon_name in icons_item.keys():
+            self.root.ids.con_nav_drawer.ids.md_list.add_widget(
+                ItemDrawer(icon=icon_name, text=icons_item[icon_name])
+            )
+
+
+
 
 MainApp().run()

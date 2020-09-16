@@ -8,7 +8,7 @@ from kivy.properties import ObjectProperty, StringProperty
 from kivymd.theming import ThemableBehavior
 from kivymd.uix.list import MDList, OneLineIconListItem
 from kivymd.app import MDApp
-from kivymd.uix.tab import MDTabsBase
+from kivymd.uix.tab import MDTabsBase, MDTabsBar, MDTabs
 from kivymd.uix.boxlayout import MDBoxLayout
 
 Builder.load_string('''
@@ -148,8 +148,6 @@ class ItemDrawer(OneLineIconListItem):
 
 
 
-
-
 class all_this_shit(MDBoxLayout):
     """Здесь основной класс.
         Для доступа к его методам внутри него используется root.method_name
@@ -173,10 +171,13 @@ class MainApp(MDApp):
     Основной класс - точка входа.
     Для доступа к методам используется app.method_name
     """
-    def build(self):
-        return all_this_shit()
 
+    def build(self):
+        self.theme_cls.primary_palette = "Cyan"
+        self.theme_cls.primary_hue = "A700"
+        return all_this_shit()
     def on_start(self):
+
         self.root.ids.tabs.add_widget(Tab(text=f"Аврора 1"))
         self.root.ids.tabs.add_widget(Tab(text=f"Аврора 2"))
         self.root.ids.tabs.add_widget(Tab(text=f"София"))
@@ -186,18 +187,18 @@ class MainApp(MDApp):
         # Разобрался, как получить доступ к элементу класса
         # Для доступа к сторонним классам в основном создается объект этого касса, ему дается индетификатор
         # и после этого, через его id можно получить доступ к его ids
-        icons_item = {
-            "folder": "My files",
-            "account-multiple": "Shared with me",
-            "star": "Starred",
-            "history": "Recent",
-            "checkbox-marked": "Shared with me",
-            "upload": "Upload",
-        }
-        for icon_name in icons_item.keys():
-            self.root.ids.con_nav_drawer.ids.md_list.add_widget(
-                ItemDrawer(icon=icon_name, text=icons_item[icon_name])
-            )
+        # icons_item = {
+        #     "folder": "My files",
+        #     "account-multiple": "Shared with me",
+        #     "star": "Starred",
+        #     "history": "Recent",
+        #     "checkbox-marked": "Shared with me",
+        #     "upload": "Upload",
+        # }
+        # for icon_name in icons_item.keys():
+        #     self.root.ids.con_nav_drawer.ids.md_list.add_widget(
+        #         ItemDrawer(icon=icon_name, text=icons_item[icon_name])
+        #     )
 
 
 

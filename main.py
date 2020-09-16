@@ -16,10 +16,11 @@ Builder.load_string('''
     BoxLayout:
     
         NavigationLayout:
-    
+        
             ScreenManager:
-    
+                id: screen_manager
                 Screen:
+                    name: "arbeit_menu"
                     MDTabs:
                         id: tabs
                     MDBottomAppBar:
@@ -30,16 +31,29 @@ Builder.load_string('''
                             title: "ЦУК"
                             type: "bottom"
                             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-                   
+                            on_action_button: root.mid_button()
+                            mode: "end"                  
 
                         Widget:
-    
+                        
+                Screen:
+                    name: "or_CYKA"
+                                        
+                    MDLabel:
+                        text: "АААААА, бляяяяять\\nХули ничего не работаеееет!!?!?!??"
+                        halign: "center" 
+                    MDFloatingActionButton:
+                        icon: "keyboard-backspace"
+                        md_bg_color: app.theme_cls.primary_color   
     
             MDNavigationDrawer:
                 id: nav_drawer
     
-                ContentNavigationDrawer:
+                ContentNavigationDrawer:                
                     id: con_nav_drawer
+                    screen_manager: screen_manager
+                    nav_drawer: nav_drawer
+                    
             
 <ItemDrawer>:
     theme_text_color: "Custom"
@@ -50,6 +64,7 @@ Builder.load_string('''
         icon: root.icon
         theme_text_color: "Custom"
         text_color: root.text_color
+        
         
 <ContentNavigationDrawer>:
     id: con
@@ -88,10 +103,16 @@ Builder.load_string('''
             ItemDrawer:
                 icon: "air-horn"
                 text: "Крики цука"
+                on_press:
+                    root.nav_drawer.set_state("close")
+                    root.screen_manager.current = "or_CYKA"
             
             ItemDrawer:
                 icon: "fire"
                 text: "Горящие жопы"
+                on_press:
+                    root.nav_drawer.set_state("close")
+                    root.screen_manager.current = "arbeit_menu"
                 
             ItemDrawer:
                 icon: "format-text"
@@ -119,6 +140,8 @@ class DrawerList(ThemableBehavior, MDList):
 
 class ContentNavigationDrawer(BoxLayout):
     """"""
+    screen_manager = ObjectProperty()
+    nav_drawer = ObjectProperty()
 
 class ItemDrawer(OneLineIconListItem):
     icon = StringProperty()
@@ -135,6 +158,9 @@ class all_this_shit(MDBoxLayout):
         self, instance_tabs, instance_tab, instance_tab_label, tab_text
     ):
         print("left")
+
+    def mid_button(self):
+        print("mid_button_action")
 
 
 class Tab(FloatLayout, MDTabsBase):
@@ -158,7 +184,7 @@ class MainApp(MDApp):
         self.root.ids.tabs.add_widget(Tab(text=f"Виктория"))
 
         # Разобрался, как получить доступ к элементу класса
-        # Для доступа к сторонним классам в основном создается объект этого лкасса, ему дается индетификатор
+        # Для доступа к сторонним классам в основном создается объект этого касса, ему дается индетификатор
         # и после этого, через его id можно получить доступ к его ids
         icons_item = {
             "folder": "My files",

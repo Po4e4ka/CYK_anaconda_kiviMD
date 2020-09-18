@@ -65,7 +65,6 @@ Builder.load_string('''
         theme_text_color: "Custom"
         text_color: root.text_color
         
-        
 <ContentNavigationDrawer>:
     id: con
     orientation: "vertical"

@@ -1,75 +1,74 @@
 from kivy.lang import Builder
-from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import ObjectProperty
+from kivy.uix.floatlayout import FloatLayout
 
 from kivymd.app import MDApp
+from kivymd.uix.tab import MDTabsBase, MDTabsBar
+from kivymd.uix.list import ThreeLineAvatarIconListItem, MDList
 
-KV = '''
-<ContentNavigationDrawer>:
-
-    ScrollView:
-
-        MDList:
-
-            OneLineListItem:
-                text: "Screen 1"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "scr 1"
-
-            OneLineListItem:
-                text: "Screen 2"
-                on_press:
-                    root.nav_drawer.set_state("close")
-                    root.screen_manager.current = "scr 2"
+from Card import *
 
 
-Screen:
+from Card import *
 
-    MDToolbar:
-        id: toolbar
-        pos_hint: {"top": 1}
-        elevation: 10
-        title: "MDNavigationDrawer"
-        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+# Залив текста киви в переменную-------------------------------------------------------
+kivy_code = ''
+with open("kivy_code.kv", 'r', encoding="utf-8") as f:
+    for i in f.readlines():
+        if i[0] != '#':
+            kivy_code += i
+# -------------------------------------------------------------------------------------
 
-    NavigationLayout:
-        x: toolbar.height
+# Класс со списком задач --------------------------------------------------------------
+class Tab(FloatLayout, MDTabsBase):
+    '''Class implementing content for a tab.'''
+# -------------------------------------------------------------------------------------
 
-        ScreenManager:
-            id: screen_manager
+class MainApp(MDApp):
+    card_list = Card_.TestCardCreator(100)
+    object_list = {}
+    for card in card_list:
+        if not (card.adress in object_list):
+            object_list[card.adress] = [card]
+        else:
+            object_list[card.adress].append(card)
 
-            Screen:
-                name: "scr 1"
-
-                MDLabel:
-                    text: "Screen 1"
-                    halign: "center"
-
-            Screen:
-                name: "scr 2"
-
-                MDLabel:
-                    text: "Screen 2"
-                    halign: "center"
-
-        MDNavigationDrawer:
-            id: nav_drawer
-
-            ContentNavigationDrawer:
-                screen_manager: screen_manager
-                nav_drawer: nav_drawer
-'''
-
-
-class ContentNavigationDrawer(BoxLayout):
-    screen_manager = ObjectProperty()
-    nav_drawer = ObjectProperty()
-
-
-class TestNavigationDrawer(MDApp):
     def build(self):
-        return Builder.load_string(KV)
+        return Builder.load_string(kivy_code)
+
+    def on_start(self):
+        # Создам список таб, то есть объектов (Авр1, Авр2 и тд...)
+        tabs_list = []
+        # Пройдусь по всем "названиям объекта"
+        for name_tab in self.object_list.keys():
+            # Сделаю список заявок в переменную с каждого объекта
+            _card_list = self.object_list[name_tab]
+            # Добавлю табу НОВОГО объекта
+            tabs_list.append(Tab(text=name_tab))
+            #
+            self.root.ids.tabs.add_widget(tabs_list[-1])
+            # Заполню заявками табу
+            for card in _card_list:
+                tabs_list[-1].ids.main_list.add_widget(ThreeLineAvatarIconListItem(text=str(card.data),
+                                                                                   secondary_text=card.text,
+                                                                                   tertiary_text=card.status,
+                                                                                   on_press=self.test))
 
 
-TestNavigationDrawer().run()
+    def on_tab_switch(
+        self, instance_tabs, instance_tab, instance_tab_label, tab_text
+    ):
+        '''Called when switching tabs.
+
+        :type instance_tabs: <kivymd.uix.tab.MDTabs object>;
+        :param instance_tab: <__main__.Tab object>;
+        :param instance_tab_label: <kivymd.uix.tab.MDTabsLabel object>;
+        :param tab_text: text or name icon of tab;
+        '''
+    def test(self, *args):
+        print('test_press')
+
+
+
+
+
+MainApp().run()

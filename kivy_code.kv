@@ -1,0 +1,22 @@
+# Первый бокс лайоут
+BoxLayout:
+
+    orientation: "vertical"
+    MDToolbar:
+        title: "Объекты"
+    MDTabs:
+        id: tabs
+        on_tab_switch: app.on_tab_switch(*args)
+
+
+<Tab>:
+    ScrollView:
+        id: scroll_view
+        MDList:
+            id: main_list
+#           id: tab_text
+#           text: "Test"
+
+#            secondary_text: "test"
+#            tertiary_text: "test"
+

@@ -10,19 +10,34 @@ from kivymd.uix.list import MDList, OneLineIconListItem
 from kivymd.app import MDApp
 from kivymd.uix.tab import MDTabsBase, MDTabsBar, MDTabs
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.card import MDCard, MDSeparator
+from kivymd.uix.label import MDLabel
+
+from Card import Card_
 
 Builder.load_string('''
 <all_this_shit>
-    BoxLayout:
-    
-        NavigationLayout:
-        
-            ScreenManager:
-                id: screen_manager
-                Screen:
-                    name: "arbeit_menu"
-                    MDTabs:
-                        id: tabs
+    NavigationLayout:    
+        ScreenManager:        
+            id: screen_manager
+            
+            Screen:            
+                id: arbeit-menu                
+                name: "arbeit_menu"
+                BoxLayout:
+                    BoxLayout:
+                        MDTabs:
+                            id: tabs                 
+                            MDList:   
+                                id: main_list
+                                ThreeLineAvatarIconListItem:
+                                    text: "Test"
+                                    secondary_text: "test"
+                                    tertiary_text: "test"                 
+                                    
+                                    IconRightWidget:
+                                        icon: "delete"
+                FloatLayout:           
                     MDBottomAppBar:
                         orientation: 'vertical'
     
@@ -32,27 +47,32 @@ Builder.load_string('''
                             type: "bottom"
                             left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
                             on_action_button: root.mid_button()
-                            mode: "end"                  
+                            mode: "end" 
+                
+                
+                         
+                
+            Screen:
+                name: "or_CYKA"
+                                    
+                MDBottomAppBar:
+                    orientation: 'vertical'
 
-                        Widget:
-                        
-                Screen:
-                    name: "or_CYKA"
-                                        
-                    MDLabel:
-                        text: "АААААА, бляяяяять\\nХули ничего не работаеееет!!?!?!??"
-                        halign: "center" 
-                    MDFloatingActionButton:
-                        icon: "keyboard-backspace"
-                        md_bg_color: app.theme_cls.primary_color   
-    
-            MDNavigationDrawer:
-                id: nav_drawer
-    
-                ContentNavigationDrawer:                
-                    id: con_nav_drawer
-                    screen_manager: screen_manager
-                    nav_drawer: nav_drawer
+                    MDToolbar:
+                        id: toolbar
+                        title: "ЦУК"
+                        type: "bottom"
+                        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+                        on_action_button: root.mid_button()
+                        mode: "end"      
+
+        MDNavigationDrawer:
+            id: nav_drawer
+
+            ContentNavigationDrawer:                
+                id: con_nav_drawer
+                screen_manager: screen_manager
+                nav_drawer: nav_drawer
                     
             
 <ItemDrawer>:
@@ -145,7 +165,9 @@ class ContentNavigationDrawer(BoxLayout):
 class ItemDrawer(OneLineIconListItem):
     icon = StringProperty()
 
-
+class Card(MDCard):
+    def __init__(self):
+        self.size = 100,100
 
 class all_this_shit(MDBoxLayout):
     """Здесь основной класс.
@@ -177,11 +199,13 @@ class MainApp(MDApp):
         return all_this_shit()
     def on_start(self):
 
+        # Создание вкладок с заявками----------------------------
         self.root.ids.tabs.add_widget(Tab(text=f"Аврора 1"))
         self.root.ids.tabs.add_widget(Tab(text=f"Аврора 2"))
         self.root.ids.tabs.add_widget(Tab(text=f"София"))
         self.root.ids.tabs.add_widget(Tab(text=f"Екатерина"))
         self.root.ids.tabs.add_widget(Tab(text=f"Виктория"))
+        # -------------------------------------------------------
 
         # Разобрался, как получить доступ к элементу класса
         # Для доступа к сторонним классам в основном создается объект этого касса, ему дается индетификатор
@@ -198,6 +222,11 @@ class MainApp(MDApp):
         #     self.root.ids.con_nav_drawer.ids.md_list.add_widget(
         #         ItemDrawer(icon=icon_name, text=icons_item[icon_name])
         #     )
+
+    def on_tab_switch(
+            self, instance_tabs, instance_tab, instance_tab_label, tab_text
+    ):
+        pass
 
 
 

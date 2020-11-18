@@ -5,10 +5,11 @@ from kivymd.app import MDApp
 from kivymd.uix.tab import MDTabsBase, MDTabsBar
 from kivymd.uix.list import ThreeLineAvatarIconListItem, MDList
 
-from Card import *
-
 
 from Card import *
+
+from kivy.core.window import Window
+Window.size = (400, 700)
 
 # Залив текста киви в переменную-------------------------------------------------------
 kivy_code = ''
@@ -23,15 +24,19 @@ class Tab(FloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 # -------------------------------------------------------------------------------------
 
+
+
+
 class MainApp(MDApp):
-    card_list = Card_.TestCardCreator(100)
+    card_list = Card_.TestCardCreator(10)
     object_list = {}
     for card in card_list:
         if not (card.adress in object_list):
             object_list[card.adress] = [card]
         else:
             object_list[card.adress].append(card)
-
+        print(card.number)
+    del card_list
     def build(self):
         return Builder.load_string(kivy_code)
 
@@ -47,11 +52,16 @@ class MainApp(MDApp):
             #
             self.root.ids.tabs.add_widget(tabs_list[-1])
             # Заполню заявками табу
+
             for card in _card_list:
-                tabs_list[-1].ids.main_list.add_widget(ThreeLineAvatarIconListItem(text=str(card.data),
-                                                                                   secondary_text=card.text,
-                                                                                   tertiary_text=card.status,
-                                                                                   on_press=self.test))
+                print(card)
+                new_widget = ThreeLineAvatarIconListItem(text=f'Задача № {card.number}',
+                                                         secondary_text=str(card.date),
+                                                         tertiary_text=card.status)
+                new_widget.card_inside = card
+                new_widget.bind(on_press=lambda t: self.card_open(t))
+
+                tabs_list[-1].ids.main_list.add_widget(new_widget)
 
 
     def on_tab_switch(
@@ -64,8 +74,20 @@ class MainApp(MDApp):
         :param instance_tab_label: <kivymd.uix.tab.MDTabsLabel object>;
         :param tab_text: text or name icon of tab;
         '''
-    def test(self, *args):
-        print('test_press')
+
+    def card_open(self, widget):
+        card = widget.card_inside
+        self.root.transition.direction = 'left'
+        self.root.current = 'card'
+        self.root.ids.title_text.text = card.adress
+        self.root.ids.main_text.text = card.text
+        self.root.ids.content.title = f"Задача №{card.number}"
+
+
+    def callback(self):
+        self.root.transition.direction = 'right'
+        self.root.current = 'main'
+
 
 
 

@@ -3,14 +3,11 @@ import numpy.random as rd
 
 
 class Card_:
-    adress = 'null'
-    text = 'null'
-    data = datetime.datetime.now()
-    status = 'null'
-    def __init__(self, adr, text, date, st):
+    def __init__(self, numb, adr, text, date, st):
+        self.number = numb
         self.adress = adr
         self.text = text
-        self.data = date
+        self.date = date
         self.status = st
 
     def json_to_Card(self, json):
@@ -33,11 +30,13 @@ class Card_:
     def TestCardCreator(cls, count):
         testCards = []
         for i in range(count):
+            obj = cls.enum_adr[rd.randint(0, len(cls.enum_adr))]
             testCards.append(
-                Card_(cls.enum_adr[rd.randint(0, len(cls.enum_adr))],
-                                   'test',
-                                   datetime.datetime.now(),
-                                   'closed')
+                Card_(i,
+                      obj,
+                      ''.join([chr(a) for a in range(65,90)]),
+                      datetime.datetime.now(),
+                      'closed')
             )
         return testCards
 

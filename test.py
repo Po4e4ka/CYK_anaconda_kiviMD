@@ -31,6 +31,7 @@ class Tab(FloatLayout, MDTabsBase):
 
 
 class MainApp(MDApp):
+    toolbar_color =[.257,.222,.218,1]
     card_list = Card_.bitrix_to_Card_list()
     object_list = {}
     for card in card_list:
@@ -45,6 +46,8 @@ class MainApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.primary_hue = "600"
+        self.theme_cls.accent_palette = 'Red'
+        self.theme_cls.theme_style = "Dark"
         return Builder.load_string(kivy_code)
 
     def on_start(self):
@@ -70,6 +73,8 @@ class MainApp(MDApp):
         self.root.current = 'card'
         self.root.ids.taskContext.ids.title_text.text = f"  {card.adress}"
         self.root.ids.taskContext.ids.main_text.text = f"{card.text}"
+        self.root.ids.taskContext.ids.datetime_text.text = f"{card.date[0][0]}\n{card.date[1][0]}"
+
         self.root.ids.title.title = f"Задача №{card.number}"
 
 

@@ -14,7 +14,7 @@ def tab_build(app,object_list, Tab):
         # Заполню заявками табу
         for card in _card_list:
             new_widget = ThreeLineAvatarIconListItem(text=f'Задача № {card.number}',
-                                                     secondary_text=str(card.date),
+                                                     secondary_text=f"{card.date[0][0]}\n{card.date[1][0]}",
                                                      tertiary_text=card.text,
 
                                                      bg_color=[.183,.339,.262,.5],

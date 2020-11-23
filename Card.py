@@ -16,7 +16,10 @@ class Card_:
         task_list = bitrix_.get_group()["tasks"]
         card_list = []
         for i, task in enumerate(task_list):
-            card_list.append(Card_(i, cls.reg_test(task['title'], task),task['description'],task['createdDate']))
+            card_list.append(Card_(task['id'],
+                                   cls.reg_test(task['title'], task),
+                                   '\n'.join([i.lstrip() for i in task['description'].split('/')[1:]]),
+                                   re.findall(r"((\d\d\d\d-\d\d-\d\d)|(\d\d:\d\d:\d\d))",task['createdDate'])))
         return card_list
 
     @staticmethod

@@ -15,9 +15,13 @@ ScreenManager:
             orientation: "vertical"
             MDToolbar:
                 id: toolbar
+                md_bg_color: app.toolbar_color
+                specific_text_color: [1,1,1,1]
                 title: "Объекты"
             MDTabs:
                 id: tabs
+                background_color: app.toolbar_color
+                text_color_active: app.theme_cls.accent_color
                 on_tab_switch: app.on_tab_switch(*args)
 
 
@@ -29,33 +33,38 @@ ScreenManager:
 
             MDToolbar:
                 id:title
+                md_bg_color: app.toolbar_color
                 opposite_colors: True
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
             TaskContext:
                 id: taskContext
 
-            MDTextField:
-
             MDFloatingActionButtonSpeedDial:
                 data: {'check': 'Завершить', 'bomb': 'Отмена', 'arm-flex': 'Принято'}
                 rotation_root_button: True
+                bg_color_root_button: app.toolbar_color
 
 
 <TaskContext@BoxLayout>:
     orientation: "vertical"
     MDLabel:
         font_size: "30sp"
-        size_hint_y: .1
+        size_hint_y: .2
         id: title_text
         text: "Объект"
         halign: "left"
     MDSeparator:
     MDLabel:
         id: main_text
-        size_hint_y: .4
+        size_hint_y: .6
         text: "Текст заявки"
         halign: "left"
     MDSeparator:
+    MDLabel:
+        id: datetime_text
+        size_hint_y: .4
+        text: "Текст заявки"
+        halign: "left"
 
 
 

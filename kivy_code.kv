@@ -27,7 +27,7 @@ ScreenManager:
 
     MDScreen:
         name: "card"
-        md_bg_color: [1,1,1,1]
+        md_bg_color: [.730,.695,.707,1]
         BoxLayout:
             orientation: "vertical"
 
@@ -49,30 +49,24 @@ ScreenManager:
 
 <TaskContext@BoxLayout>:
     orientation: "vertical"
-    MDLabel:
+    Card_Label:
         font_size: "30sp"
         size_hint_y: .2
         id: title_text
-        text: "Объект"
-        pos_hint:{"right":1.05}
-        valign: "top"
     MDSeparator:
-    MDLabel:
+    Card_Label:
         id: main_text
-        pos_hint:{"right":1.05}
-        size_hint_y: .3
-        text: "Текст заявки"
-        valign: "top"
+        size_hint_y: .9
 
     MDSeparator:
-    MDLabel:
+    Card_Label:
         id: datetime_text
-        size_hint_y: .4
-        pos_hint:{"right":1.05}
-        text: "Текст заявки"
-        valign: "top"
+        size_hint_y: .2
 
-
+<Card_Label@MDLabel>
+    pos_hint:{"right":1}
+    size_hint_x: .92
+    valign: "top"
 
 
 

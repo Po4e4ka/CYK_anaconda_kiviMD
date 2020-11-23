@@ -18,7 +18,7 @@ class Card_:
         for i, task in enumerate(task_list):
             card_list.append(Card_(task['id'],
                                    cls.reg_test(task['title'], task),
-                                   '\n'.join([i.lstrip() for i in task['description'].split('/')[1:]]),
+                                   ' '.join([i.lstrip()+"/" for i in task['description'].split('/')[1:]]),
                                    re.findall(r"((\d\d\d\d-\d\d-\d\d)|(\d\d:\d\d:\d\d))",task['createdDate'])))
         return card_list
 

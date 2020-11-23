@@ -1,42 +1,44 @@
 import datetime
 import numpy.random as rd
+from bitrix_s import bitrix
+import re
 
 
 class Card_:
-    def __init__(self, numb, adr, text, date, st):
+    def __init__(self, numb, adr, text, date):
         self.number = numb
         self.adress = adr
         self.text = text
         self.date = date
-        self.status = st
-
-    def json_to_Card(self, json):
-        self.adress, self.text = json['task']['title'].splt('.')[0], json['task']['title'].splt('.')[1]
-        self.data = json['task']['createdDate']
-
-
-    enum_adr = {0: "Test",
-                1: 'Аврора 1',
-                2: "Аврора 2",
-                3: "София",
-                4: "Мегалит",
-                5: "Виктория",
-                6: "Дачный",
-                7: "Екатерина",
-                8: "Форвард",
-                9: "Авиатор"}
-
     @classmethod
-    def TestCardCreator(cls, count):
-        testCards = []
-        for i in range(count):
-            obj = cls.enum_adr[rd.randint(0, len(cls.enum_adr))]
-            testCards.append(
-                Card_(i,
-                      obj,
-                      ''.join([chr(a) for a in range(65,90)]),
-                      datetime.datetime.now(),
-                      'closed')
-            )
-        return testCards
+    def bitrix_to_Card_list(cls):
+        bitrix_ = bitrix()
+        task_list = bitrix_.get_group()["tasks"]
+        card_list = []
+        for i, task in enumerate(task_list):
+            card_list.append(Card_(i, cls.reg_test(task['title'], task),task['description'],task['createdDate']))
+        return card_list
 
+    @staticmethod
+    def reg_test(title, task):
+        enum_adr = [("Философия",["1-й проезд"]),
+                    ('Аврора 1',["Коллонтай", "Колонтай"]),
+                    ("Аврора 2",["Белышева"]),
+                    ("София",["ЮШ", "шоссе"]),
+                    ("Мегалит",["Обуховской"]),
+                    ("Виктория",["Авиаторов"]),
+                    ("Дачный",["Дачный"]),
+                    ("Екатерина",["Екатерининский д.2"]),
+                    ("Форвард",["Цвета", "Екатерининская 22"]),
+                    ("Авиатор",["Ручьевский"]),
+                    ("Монплезир",["Ленинский"]),
+                    ("СГ", ["Кравченко"])]
+        for adr in enum_adr:
+            if re.search(adr[0],title):
+                return adr[0]
+            else:
+                for test in adr[1]:
+                    if re.search(test, title) is not None:
+                        return adr[0]
+        print(task)
+        return "Несорт"

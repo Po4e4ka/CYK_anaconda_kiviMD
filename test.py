@@ -1,6 +1,6 @@
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.screenmanager import SlideTransition, CardTransition, RiseInTransition, FallOutTransition, FadeTransition
+from kivy.uix.screenmanager import FadeTransition
 
 from kivymd.app import MDApp
 from kivymd.uix.tab import MDTabsBase, MDTabsBar
@@ -11,6 +11,9 @@ from Card import *
 from bitrix_s import bitrix
 
 from kivy.core.window import Window
+
+from functions import tab_build
+
 Window.size = (400, 500)
 
 # Залив текста киви в переменную-------------------------------------------------------
@@ -27,17 +30,17 @@ class Tab(FloatLayout, MDTabsBase):
 # -------------------------------------------------------------------------------------
 
 
-
-
 class MainApp(MDApp):
-    card_list = Card_.TestCardCreator(10)
+    card_list = Card_.bitrix_to_Card_list()
     object_list = {}
     for card in card_list:
         if not (card.adress in object_list):
             object_list[card.adress] = [card]
         else:
             object_list[card.adress].append(card)
-        print(card.number)
+    not_sort_objects = {"Несорт":object_list["Несорт"]}
+
+    del object_list["Несорт"]
     del card_list
     def build(self):
         self.theme_cls.primary_palette = "Green"
@@ -45,27 +48,8 @@ class MainApp(MDApp):
         return Builder.load_string(kivy_code)
 
     def on_start(self):
-        # Создам список таб, то есть объектов (Авр1, Авр2 и тд...)
-        tabs_list = []
-        # Пройдусь по всем "названиям объекта"
-        for name_tab in self.object_list.keys():
-            # Сделаю список заявок в переменную с каждого объекта
-            _card_list = self.object_list[name_tab]
-            # Добавлю табу НОВОГО объекта
-            tabs_list.append(Tab(text=name_tab))
-            #
-            self.root.ids.tabs.add_widget(tabs_list[-1])
-            # Заполню заявками табу
-
-            for card in _card_list:
-                print(card)
-                new_widget = ThreeLineAvatarIconListItem(text=f'Задача № {card.number}',
-                                                         secondary_text=str(card.date),
-                                                         tertiary_text=card.status)
-                new_widget.card_inside = card
-                new_widget.bind(on_press=lambda t: self.card_open(t))
-
-                tabs_list[-1].ids.main_list.add_widget(new_widget)
+        tab_build(self,self.object_list, Tab)
+        tab_build(self, self.not_sort_objects,Tab)
 
 
     def on_tab_switch(
@@ -84,9 +68,8 @@ class MainApp(MDApp):
         self.root.transition = FadeTransition()
         # self.root.transition.direction = 'down'
         self.root.current = 'card'
-        print(self.root.ids.taskContext.ids)
         self.root.ids.taskContext.ids.title_text.text = f"  {card.adress}"
-        self.root.ids.taskContext.ids.main_text.text = f"   {card.text}"*3
+        self.root.ids.taskContext.ids.main_text.text = f"{card.text}"
         self.root.ids.title.title = f"Задача №{card.number}"
 
 

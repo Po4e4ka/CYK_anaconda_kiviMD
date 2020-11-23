@@ -3,7 +3,6 @@ ScreenManager:
     Screen:
         name: "main"
         BoxLayout:
-
             orientation: "vertical"
             MDToolbar:
                 title: "Объекты"
@@ -18,48 +17,29 @@ ScreenManager:
             orientation: "vertical"
 
             MDToolbar:
-                id:content
-                title: "Задача №_____"
-                mode: 'end'
-                icon: 'git'
-                on_action_button: app.callback(self.icon)
+                id:title
+                opposite_colors: True
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
+            TaskContext:
+                id: taskContext
 
 
-            MDLabel:
-                id: title_text
-                text: "MDLabel"
-                halign: "center"
 
-            MDLabel:
-                id: main_text
-                text: "MDLabel"
-                halign: "center"
-            FloatLayout:
-                adaptive_height: True
-                adaptive_width: True
-                orientation: "horizontal"
-
-                MDRectangleFlatIconButton:
-                    icon: "celtic-cross"
-                    pos_hint: {'center_x': .2, 'center_y': 1}
-                    text: "Отмена"
-                    text_color: 0, 0, 1, 1
-                MDRectangleFlatIconButton:
-                    icon: "check-bold"
-                    pos_hint: {'center_x': .8, 'center_y': 1}
-                    text: "Принять"
-                    text_color: 0, 0, 1, 1
-            MDTextField:
-                id: field
-                pos_hint: {'center_x': .7, 'center_y': 1}
-                width: "200dp"
-                hint_text: "Коментарий к заявке"
-            MDRectangleFlatIconButton:
-                icon: "check-bold"
-                pos_hint: {'center_x': .7, 'center_y': 1}
-                text: "Завершить"
-                text_color: 0, 0, 1, 1
+<TaskContext@BoxLayout>:
+    orientation: "vertical"
+    MDLabel:
+        font_size: "30sp"
+        size_hint_y: .2
+        id: title_text
+        text: "Объект"
+        halign: "left"
+    MDSeparator:
+    MDLabel:
+        id: main_text
+        size_hint_y: .4
+        text: "Текст заявки"
+        halign: "left"
+    MDSeparator:
 
 
 

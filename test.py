@@ -1,15 +1,17 @@
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.screenmanager import SlideTransition, CardTransition, RiseInTransition, FallOutTransition, FadeTransition
 
 from kivymd.app import MDApp
 from kivymd.uix.tab import MDTabsBase, MDTabsBar
 from kivymd.uix.list import ThreeLineAvatarIconListItem, MDList
-
+from kivymd.uix.toolbar import MDActionBottomAppBarButton
 
 from Card import *
+from bitrix_s import bitrix
 
 from kivy.core.window import Window
-Window.size = (400, 700)
+Window.size = (400, 500)
 
 # Залив текста киви в переменную-------------------------------------------------------
 kivy_code = ''
@@ -38,6 +40,8 @@ class MainApp(MDApp):
         print(card.number)
     del card_list
     def build(self):
+        self.theme_cls.primary_palette = "Green"
+        self.theme_cls.primary_hue = "600"
         return Builder.load_string(kivy_code)
 
     def on_start(self):
@@ -77,16 +81,29 @@ class MainApp(MDApp):
 
     def card_open(self, widget):
         card = widget.card_inside
-        self.root.transition.direction = 'left'
+        self.root.transition = FadeTransition()
+        # self.root.transition.direction = 'down'
         self.root.current = 'card'
-        self.root.ids.title_text.text = card.adress
-        self.root.ids.main_text.text = card.text
-        self.root.ids.content.title = f"Задача №{card.number}"
+        print(self.root.ids.taskContext.ids)
+        self.root.ids.taskContext.ids.title_text.text = f"  {card.adress}"
+        self.root.ids.taskContext.ids.main_text.text = f"   {card.text}"*3
+        self.root.ids.title.title = f"Задача №{card.number}"
 
 
     def callback(self):
-        self.root.transition.direction = 'right'
+        # self.root.transition.direction = 'up'
         self.root.current = 'main'
+
+    def print_(self,toolbar):
+
+        print(toolbar)
+
+        button = MDActionBottomAppBarButton()
+        button.data = {'language-python': 'Python',
+        'language-php': 'PHP',
+        'language-cpp': 'C++',}
+        # button.rotation_root_button = True
+        print(button.rotation_root_button)
 
 
 

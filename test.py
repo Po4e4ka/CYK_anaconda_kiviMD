@@ -71,7 +71,7 @@ class MainApp(MDApp):
         self.root.transition = FadeTransition()
         # self.root.transition.direction = 'down'
         self.root.current = 'card'
-        self.root.ids.taskContext.ids.title_text.text = f"  {card.adress}"
+        self.root.ids.taskContext.ids.title_text.text = f"{card.adress}"
         self.root.ids.taskContext.ids.main_text.text = f"{card.text}"
         self.root.ids.taskContext.ids.datetime_text.text = f"{card.date[0][0]}\n{card.date[1][0]}"
 

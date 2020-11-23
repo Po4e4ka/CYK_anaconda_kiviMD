@@ -25,15 +25,17 @@ ScreenManager:
                 on_tab_switch: app.on_tab_switch(*args)
 
 
-    Screen:
+    MDScreen:
         name: "card"
-
+        md_bg_color: [1,1,1,1]
         BoxLayout:
             orientation: "vertical"
+
 
             MDToolbar:
                 id:title
                 md_bg_color: app.toolbar_color
+                specific_text_color: [1,1,1,1]
                 opposite_colors: True
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
             TaskContext:
@@ -52,19 +54,23 @@ ScreenManager:
         size_hint_y: .2
         id: title_text
         text: "Объект"
-        halign: "left"
+        pos_hint:{"right":1.05}
+        valign: "top"
     MDSeparator:
     MDLabel:
         id: main_text
-        size_hint_y: .6
+        pos_hint:{"right":1.05}
+        size_hint_y: .3
         text: "Текст заявки"
-        halign: "left"
+        valign: "top"
+
     MDSeparator:
     MDLabel:
         id: datetime_text
         size_hint_y: .4
+        pos_hint:{"right":1.05}
         text: "Текст заявки"
-        halign: "left"
+        valign: "top"
 
 
 

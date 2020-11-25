@@ -38,11 +38,15 @@ ScreenManager:
                 specific_text_color: [1,1,1,1]
                 opposite_colors: True
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
+
             TaskContext:
                 id: taskContext
 
             MDFloatingActionButtonSpeedDial:
-                data: {'check': 'Завершить', 'bomb': 'Отмена', 'arm-flex': 'Принято'}
+                id: bottom_button
+                data: app.buttons
+                on_open: app.button_click_open(self)
+                on_close: app.button_click_close(self)
                 rotation_root_button: True
                 bg_color_root_button: app.toolbar_color
 

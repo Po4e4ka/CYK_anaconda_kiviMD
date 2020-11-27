@@ -9,33 +9,34 @@ ScreenManager:
             height: root.height - toolbar.height
 
             FitImage:
-                source: "1.jpg"
+                source: "image/3.jpg"
 
         BoxLayout:
             orientation: "vertical"
             MDToolbar:
                 id: toolbar
-                md_bg_color: app.toolbar_color
-                specific_text_color: [1,1,1,1]
+                left_action_items: [["menu", lambda x:x]]
+                md_bg_color: app.colors["toolbar"]
+                specific_text_color: app.colors["text"]
                 title: "Объекты"
             MDTabs:
                 id: tabs
-                background_color: app.toolbar_color
+                background_color: app.colors["toolbar"]
                 text_color_active: app.theme_cls.accent_color
                 on_tab_switch: app.on_tab_switch(*args)
 
 
     MDScreen:
         name: "card"
-        md_bg_color: [.730,.695,.707,1]
+        md_bg_color: app.colors["card_bg"]
         BoxLayout:
             orientation: "vertical"
 
 
             MDToolbar:
                 id:title
-                md_bg_color: app.toolbar_color
-                specific_text_color: [1,1,1,1]
+                md_bg_color: app.colors["toolbar"]
+                specific_text_color: app.colors["text"]
                 opposite_colors: True
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
 
@@ -48,7 +49,12 @@ ScreenManager:
                 on_open: app.button_click_open(self)
                 on_close: app.button_click_close(self)
                 rotation_root_button: True
-                bg_color_root_button: app.toolbar_color
+                bg_color_root_button: app.colors["toolbar"]
+
+    Screen:
+        name: "my_tasks"
+        MDLabel:
+            text: "Moi zayabki"
 
 
 <TaskContext@BoxLayout>:

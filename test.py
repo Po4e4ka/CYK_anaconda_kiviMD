@@ -1,11 +1,10 @@
-import json
+import sqlite3
 
 from kivy.lang import Builder
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import FadeTransition
 
 from kivymd.app import MDApp
-from kivymd.uix.button import MDFloatingBottomButton
 from kivymd.uix.tab import MDTabsBase
 from kivymd.uix.toolbar import MDActionBottomAppBarButton
 
@@ -15,7 +14,12 @@ from kivy.core.window import Window
 
 from functions import tab_build
 
-Window.size = (400, 500)
+import ctypes
+
+user32 = ctypes.windll.user32
+screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
+
 
 # Залив текста киви в переменную-------------------------------------------------------
 kivy_code = ''
@@ -31,26 +35,41 @@ class Tab(FloatLayout, MDTabsBase):
 # -------------------------------------------------------------------------------------
 
 class MainApp(MDApp):
+    """
+    Класс приложения
+    colors - Список цветов, используемых в приложении
+    card_list - Список заявок
+    object_list - Список объектов
+    buttons - Кнопки, действия с заявкой
+    """
+    colors = {"toolbar":[.257, .222, .218, 1],
+              "card_bg":[.730,.695,.707,1],
+              "text":[1,1,1,1]
+    }
 
-    toolbar_color = [.257, .222, .218, 1]
     card_list = Card_.bitrix_to_Card_list()
     object_list = {}
     buttons = {'check': 'Завершить',
                'bomb': 'Отмена',
                'arm-flex': 'Принято'}
-
+    botom_buttons = []
+    # ---------- Заполнение объект листа. Объект лист имеет в себе все таски, после идет удаление списка заявок
     for card in card_list:
         if not (card.adress in object_list):
             object_list[card.adress] = [card]
         else:
             object_list[card.adress].append(card)
-
     not_sort_objects = {"Несорт": object_list["Несорт"]}
-
     del object_list["Несорт"]
     del card_list
+    # --------------------------
 
     def build(self):
+        """
+        В этом методе идет создание приложения. Старт
+        :return:
+        """
+        Window.size = (600, 600)
         self.theme_cls.primary_palette = "Green"
         self.theme_cls.primary_hue = "600"
         self.theme_cls.accent_palette = 'Red'
@@ -58,12 +77,25 @@ class MainApp(MDApp):
         return Builder.load_string(kivy_code)
 
     def on_start(self):
+        """
+        Выполняются дествия после старта приложения
+        Создаю табы на основном экране
+        :return:
+        """
         tab_build(self, self.object_list, Tab)
         tab_build(self, self.not_sort_objects, Tab)
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
     ):
+        """
+        Метод прит переключениии таб(объектов)
+        :param instance_tabs:
+        :param instance_tab:
+        :param instance_tab_label:
+        :param tab_text:
+        :return:
+        """
         pass
 
     #-------------------------- Открытие заявки ---------------------------------------------------
@@ -76,21 +108,12 @@ class MainApp(MDApp):
         self.root.ids.taskContext.ids.datetime_text.text = f"{card.date[0][0]}\n{card.date[1][0]}"
 
         self.root.ids.title.title = f"Задача №{card.number}"
-    #----------------------------------------------------------------------------------------------
+    # ------Возврат на начальный экран-------------------------------------------------------------------
 
     def callback(self):
         self.root.current = 'main'
+    # -------------------------------------------------------------------------------------------------
 
-    def print_(self, toolbar):
-
-        print(toolbar)
-
-        button = MDActionBottomAppBarButton()
-        button.data = {'language-python': 'Python',
-                       'language-php': 'PHP',
-                       'language-cpp': 'C++', }
-        print(button.rotation_root_button)
-    botom_buttons = []
 
     def button_click_open(self, button):
         print("open")

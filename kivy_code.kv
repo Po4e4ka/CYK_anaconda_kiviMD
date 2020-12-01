@@ -15,10 +15,19 @@ ScreenManager:
             orientation: "vertical"
             MDToolbar:
                 id: toolbar
-                left_action_items: [["menu", lambda x:x]]
                 md_bg_color: app.colors["toolbar"]
                 specific_text_color: app.colors["text"]
                 title: "Объекты"
+                MDIconButton:
+                    id: menu_button
+                    icon: "menu"
+                    pos_hint: {"center_y": 0.5}
+                    on_release: app.menu.open()
+                MDIconButton:
+                    id: refresh_button
+                    icon: "refresh"
+                    pos_hint: {"center_y": 0.5}
+#                    on_release: app.menu.open()
             MDTabs:
                 id: tabs
                 background_color: app.colors["toolbar"]
@@ -31,8 +40,6 @@ ScreenManager:
         md_bg_color: app.colors["card_bg"]
         BoxLayout:
             orientation: "vertical"
-
-
             MDToolbar:
                 id:title
                 md_bg_color: app.colors["toolbar"]
@@ -56,6 +63,11 @@ ScreenManager:
         MDLabel:
             text: "Moi zayabki"
 
+<DropMenu>:
+    items: [{"text": i} for i in app.menu_items]
+    caller: app.root.ids.toolbar.ids.right_actions
+    width_mult: 5
+
 
 <TaskContext@BoxLayout>:
     orientation: "vertical"
@@ -73,6 +85,10 @@ ScreenManager:
         id: datetime_text
         size_hint_y: .2
 
+    Card_Label:
+        id: executor
+        size_hint_y: .2
+
 <Card_Label@MDLabel>
     pos_hint:{"right":1}
     size_hint_x: .92
@@ -87,9 +103,4 @@ ScreenManager:
         id: scroll_view
         MDList:
             id: main_list
-#           id: tab_text
-#           text: "Test"
-
-#            secondary_text: "test"
-#            tertiary_text: "test"
 

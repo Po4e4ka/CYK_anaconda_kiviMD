@@ -47,13 +47,13 @@ class MainApp(MDApp):
                        "text": [1, 1, 1, 1]
                        }
         self.menu = 0 # Переменная бокового меню в тулбаре
-        self.botom_buttons = []
+        self.bottom_buttons = []
         self.buttons = {'check': 'Завершить',
                         'bomb': 'Отмена',
-                        'arm-flex': 'Принято'}
-        self.menu_items = [{"text":"Мои заявки"},
-                           {"text":"Настройки"},
-                           {"text":"Сменить пользователя"}
+                        'arm-flex': 'Взять в работу'}
+        self.menu_items = [{"text":"Мои заявки", "callback":self.my_tasks},
+                           {"text":"Настройки","callback":self.propities},
+                           {"text":"Сменить пользователя","callback":self.login_switch}
                            ]
         # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
         self.object_list, self.not_sort_objects = None, None
@@ -127,7 +127,17 @@ class MainApp(MDApp):
         pass
 
     def menu_press(self, instance):
-        print(instance)
+        for i in self.menu_items:
+            if instance.text == i["text"]:
+                i["callback"]()
+
+    # ------------------------- Методы всплывающего меню --------------------------------------------
+    def my_tasks(self):
+        print("Мои заявки")
+    def propities(self):
+        print("Настройки")
+    def login_switch(self):
+        print("Поменять логин")
 
     # -------------------------- Открытие заявки ---------------------------------------------------
     def card_open(self, widget):
@@ -149,20 +159,18 @@ class MainApp(MDApp):
     def button_click_open(self, button):
         print("open")
         for i in range(1,len(button.children)-1,2):
-            if len(self.botom_buttons) <= 2:
+            if len(self.bottom_buttons) <= 2:
                 button.children[i + 1].bind(on_press=lambda x: self.dop_button_click(x))
             temp = button.children[i+1]
             temp.label = button.children[i]
-            self.botom_buttons.append(temp)
+            self.bottom_buttons.append(temp)
 
 
     def button_click_close(self, button):
         print("close")
-
-    def dop_button_click(self, botom_button):
-        print("toc")
-        print(botom_button.label.text)
-
+    #TODO
+    def dop_button_click(self, bottom_button):
+        "pass"
 
 
 

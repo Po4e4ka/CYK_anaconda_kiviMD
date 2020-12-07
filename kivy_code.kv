@@ -27,7 +27,8 @@ ScreenManager:
                     id: refresh_button
                     icon: "refresh"
                     pos_hint: {"center_y": 0.5}
-#                    on_release: app.menu.open()
+                    on_release: app.refresh()
+
             MDTabs:
                 id: tabs
                 background_color: app.colors["toolbar"]
@@ -60,13 +61,28 @@ ScreenManager:
 
     Screen:
         name: "my_tasks"
-        MDLabel:
-            text: "Moi zayabki"
+        BoxLayout:
+            size_hint_y: None
+            height: root.height - toolbar.height
 
-<DropMenu>:
-    items: [{"text": i} for i in app.menu_items]
-    caller: app.root.ids.toolbar.ids.right_actions
-    width_mult: 5
+            FitImage:
+                source: "image/3.jpg"
+
+        BoxLayout:
+            orientation: "vertical"
+            MDToolbar:
+                id: toolbar_my
+                md_bg_color: app.colors["toolbar"]
+                specific_text_color: app.colors["text"]
+                title: f"Мои_задачи {app.my_nickname}"
+                left_action_items: [["arrow-left", lambda x: app.callback()]]
+            MDTabs:
+                id: tabs_my
+                background_color: app.colors["toolbar"]
+                text_color_active: app.theme_cls.accent_color
+                on_tab_switch: app.on_tab_switch(*args)
+
+
 
 
 <TaskContext@BoxLayout>:
@@ -89,10 +105,18 @@ ScreenManager:
         id: executor
         size_hint_y: .2
 
+
 <Card_Label@MDLabel>
     pos_hint:{"right":1}
     size_hint_x: .92
     valign: "top"
+
+# ------------------ Диалоговые окна -------------------------
+#<Dialog_prin>:
+#
+#<Dialog_otmena>:
+#
+#<Dialog_zaversh>:
 
 
 

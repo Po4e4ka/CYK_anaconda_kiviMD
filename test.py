@@ -1,6 +1,5 @@
-import sqlite3
-
 from kivy.lang import Builder
+from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 
@@ -31,8 +30,8 @@ with open("kivy_code.kv", 'r', encoding="utf-8") as f:
 # Класс со списком задач --------------------------------------------------------------
 class Tab(FloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
-class DropMenu(MDDropdownMenu):
-    """psss"""
+# class DropMenu(MDDropdownMenu):
+#     """psss"""
 
 
 
@@ -47,37 +46,45 @@ class MainApp(MDApp):
     buttons - Кнопки, действия с заявкой
     """
 
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.colors = {"toolbar": [.257, .222, .218, 1],
-                  "card_bg": [.730, .695, .707, 1],
-                  "text": [1, 1, 1, 1]
-                  }
+                       "card_bg": [.730, .695, .707, 1],
+                       "text": [1, 1, 1, 1]
+                       }
         self.menu = 0 # Переменная бокового меню в тулбаре
-        self.card_list = Card_.bitrix_to_Card_list()
-        self.object_list = {}
+        self.botom_buttons = []
         self.buttons = {'check': 'Завершить',
                         'bomb': 'Отмена',
                         'arm-flex': 'Принято'}
-        self.botom_buttons = []
         self.menu_items = ["Мои заявки",
                            "Настройки",
                            "Сменить пользователя"
                            ]
-        # ---------- Заполнение объект листа. Объект лист имеет в себе все таски, после идет удаление списка заявок
-        for card in self.card_list:
-            if not (card.adress in self.object_list):
-                self.object_list[card.adress] = [card]
-            else:
-                self.object_list[card.adress].append(card)
-        self.not_sort_objects = {"Несорт": self.object_list["Несорт"]}
-        del self.object_list["Несорт"]
-        del self.card_list
+        # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
+        self.object_list, self.not_sort_objects = None, None
+        self.my_tasks = {}
+        self.tab_list =[]
+        self.my_nickname = "NopeFantasy"
         # --------------------------
 
         Window.size = (600, 600)
 
+    @classmethod
+    def object_list_creator(cls, card_list):
+        """
+        Функция создает словарь объектов, хранящий список тасков для этого объекта.
+        Возвращает словари и последний словарь с одним ключом "несорт" и несортирвоанными задачами
+        :param card_list:
+        :return:
+        """
+        object_list = {}
+        for card in card_list:
+            if not (card.adress in object_list):
+                object_list[card.adress] = [card]
+            else:
+                object_list[card.adress].append(card)
+        return object_list, {"Несорт": object_list.pop("Несорт")}
 
     def build(self):
         """
@@ -89,7 +96,6 @@ class MainApp(MDApp):
         self.theme_cls.primary_hue = "600"
         self.theme_cls.accent_palette = 'Red'
         self.theme_cls.theme_style = "Dark"
-
         return Builder.load_string(kivy_code)
 
     def on_start(self):
@@ -98,9 +104,15 @@ class MainApp(MDApp):
         Создаю табы на основном экране
         :return:
         """
-        tab_build(self, self.object_list, Tab)
-        tab_build(self, self.not_sort_objects, Tab)
-        self.menu = DropMenu()
+        self.object_list, self.not_sort_objects = self.object_list_creator(Card_.bitrix_to_Card_list())
+        self.tab_list = tab_build(self, self.object_list, Tab)
+        self.tab_list = tab_build(self, self.not_sort_objects, Tab)
+        self.menu = DropDown()
+    def refresh(self, **kwargs):
+        self.stop()
+        for tab in self.tab_list:
+            self.root.ids.tabs.remove_widget(tab)
+        self.run()
 
     def on_tab_switch(
             self, instance_tabs, instance_tab, instance_tab_label, tab_text
@@ -114,10 +126,13 @@ class MainApp(MDApp):
         :return:
         """
         pass
-    def menu_press(self, instance_menu, instance_menu_item):
-        pass
-    #-------------------------- Открытие заявки ---------------------------------------------------
+
+    def menu_press(self, *args):
+        print("Хуй")
+
+    # -------------------------- Открытие заявки ---------------------------------------------------
     def card_open(self, widget):
+
         card = widget.card_inside
         self.root.transition = FadeTransition()
         self.root.current = 'card'
@@ -149,9 +164,6 @@ class MainApp(MDApp):
     def dop_button_click(self, botom_button):
         print("toc")
         print(botom_button.label.text)
-
-
-
 
 
 

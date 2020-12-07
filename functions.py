@@ -30,3 +30,5 @@ def tab_build(app,object_list, Tab):
             new_widget.bind(on_press=lambda t: app.card_open(t))
 
             tabs_list[-1].ids.main_list.add_widget(new_widget)
+
+    return tabs_list

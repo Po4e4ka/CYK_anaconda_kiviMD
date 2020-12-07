@@ -1,9 +1,11 @@
 from kivy.lang import Builder
+from kivy.uix.button import Button
 from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 
 from kivymd.app import MDApp
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 
@@ -14,10 +16,7 @@ from kivy.core.window import Window
 from functions import tab_build
 
 import ctypes
-
-
-
-
+import time
 
 # Залив текста киви в переменную-------------------------------------------------------
 kivy_code = ''
@@ -30,13 +29,8 @@ with open("kivy_code.kv", 'r', encoding="utf-8") as f:
 # Класс со списком задач --------------------------------------------------------------
 class Tab(FloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
-# class DropMenu(MDDropdownMenu):
-#     """psss"""
-
-
 
 # -------------------------------------------------------------------------------------
-
 class MainApp(MDApp):
     """
     Класс приложения
@@ -57,9 +51,9 @@ class MainApp(MDApp):
         self.buttons = {'check': 'Завершить',
                         'bomb': 'Отмена',
                         'arm-flex': 'Принято'}
-        self.menu_items = ["Мои заявки",
-                           "Настройки",
-                           "Сменить пользователя"
+        self.menu_items = [{"text":"Мои заявки"},
+                           {"text":"Настройки"},
+                           {"text":"Сменить пользователя"}
                            ]
         # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
         self.object_list, self.not_sort_objects = None, None
@@ -107,7 +101,12 @@ class MainApp(MDApp):
         self.object_list, self.not_sort_objects = self.object_list_creator(Card_.bitrix_to_Card_list())
         self.tab_list = tab_build(self, self.object_list, Tab)
         self.tab_list = tab_build(self, self.not_sort_objects, Tab)
-        self.menu = DropDown()
+        self.menu = MDDropdownMenu(caller=self.root.ids.menu_button,
+                                   items=self.menu_items,
+                                   width_mult=4,
+                                   callback=lambda instance: self.menu_press(instance))
+
+
     def refresh(self, **kwargs):
         self.stop()
         for tab in self.tab_list:
@@ -127,12 +126,11 @@ class MainApp(MDApp):
         """
         pass
 
-    def menu_press(self, *args):
-        print("Хуй")
+    def menu_press(self, instance):
+        print(instance)
 
     # -------------------------- Открытие заявки ---------------------------------------------------
     def card_open(self, widget):
-
         card = widget.card_inside
         self.root.transition = FadeTransition()
         self.root.current = 'card'

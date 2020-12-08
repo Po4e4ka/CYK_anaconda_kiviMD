@@ -1,7 +1,7 @@
 from kivymd.uix.list import ThreeLineAvatarIconListItem
 
 
-def tab_build(app,object_list, Tab):
+def tab_build(app,object_list, Tab, scr_widget):
     tabs_list = []
     # Пройдусь по всем "названиям объекта"
     for name_tab in object_list.keys():
@@ -10,7 +10,7 @@ def tab_build(app,object_list, Tab):
         # Добавлю табу НОВОГО объекта
         tabs_list.append(Tab(text=name_tab))
         #
-        app.root.ids.tabs.add_widget(tabs_list[-1])
+        scr_widget.add_widget(tabs_list[-1])
         # Заполню заявками табу
         for card in _card_list:
             new_widget = ThreeLineAvatarIconListItem(text=f'Задача № {card.number}',

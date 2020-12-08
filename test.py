@@ -5,7 +5,8 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.screenmanager import FadeTransition, ScreenManager
 
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDRaisedButton, MDFloatingActionButtonSpeedDial, MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
 
@@ -46,18 +47,20 @@ class MainApp(MDApp):
                        "card_bg": [.730, .695, .707, 1],
                        "text": [1, 1, 1, 1]
                        }
+        self.dialog = None
+        self.card_opens_now = None
         self.menu = 0 # Переменная бокового меню в тулбаре
         self.bottom_buttons = []
         self.buttons = {'check': 'Завершить',
                         'bomb': 'Отмена',
                         'arm-flex': 'Взять в работу'}
-        self.menu_items = [{"text":"Мои заявки", "callback":self.my_tasks},
+        self.menu_items = [{"text":"Мои заявки", "callback":self.my_tasks_screen},
                            {"text":"Настройки","callback":self.propities},
                            {"text":"Сменить пользователя","callback":self.login_switch}
                            ]
         # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
         self.object_list, self.not_sort_objects = None, None
-        self.my_tasks = {}
+        self.my_tasks = []
         self.tab_list =[]
         self.my_nickname = "NopeFantasy"
         # --------------------------
@@ -99,8 +102,8 @@ class MainApp(MDApp):
         :return:
         """
         self.object_list, self.not_sort_objects = self.object_list_creator(Card_.bitrix_to_Card_list())
-        self.tab_list = tab_build(self, self.object_list, Tab)
-        self.tab_list = tab_build(self, self.not_sort_objects, Tab)
+        self.tab_list = tab_build(self, self.object_list, Tab, scr_widget=self.root.ids.tabs)
+        self.tab_list = tab_build(self, self.not_sort_objects, Tab, scr_widget=self.root.ids.tabs)
         self.menu = MDDropdownMenu(caller=self.root.ids.menu_button,
                                    items=self.menu_items,
                                    width_mult=4,
@@ -132,8 +135,11 @@ class MainApp(MDApp):
                 i["callback"]()
 
     # ------------------------- Методы всплывающего меню --------------------------------------------
-    def my_tasks(self):
+    def my_tasks_screen(self):
         print("Мои заявки")
+        self.tab_list = tab_build(self, {"Мои заявки":self.my_tasks}, Tab, scr_widget=self.root.ids.tabs_my)
+        self.root.current = 'my_tasks'
+
     def propities(self):
         print("Настройки")
     def login_switch(self):
@@ -141,18 +147,19 @@ class MainApp(MDApp):
 
     # -------------------------- Открытие заявки ---------------------------------------------------
     def card_open(self, widget):
-        card = widget.card_inside
+        self.card_opens_now = widget.card_inside
         self.root.transition = FadeTransition()
         self.root.current = 'card'
-        self.root.ids.taskContext.ids.title_text.text = f"{card.adress}"
-        self.root.ids.taskContext.ids.main_text.text = f"{card.text}"
-        self.root.ids.taskContext.ids.datetime_text.text = f"{card.date[0][0]}\n{card.date[1][0]}"
+        self.root.ids.taskContext.ids.title_text.text = f"{self.card_opens_now.adress}"
+        self.root.ids.taskContext.ids.main_text.text = f"{self.card_opens_now.text}"
+        self.root.ids.taskContext.ids.datetime_text.text = f"{self.card_opens_now.date[0][0]}\n{self.card_opens_now.date[1][0]}"
 
-        self.root.ids.title.title = f"Задача №{card.number}"
+        self.root.ids.title.title = f"Задача №{self.card_opens_now.number}"
     # ------Возврат на начальный экран-------------------------------------------------------------------
 
     def callback(self):
         self.root.current = 'main'
+        self.root.ids.bottom_button.close_stack()
     # -------------------------------------------------------------------------------------------------
 
 
@@ -168,9 +175,36 @@ class MainApp(MDApp):
 
     def button_click_close(self, button):
         print("close")
-    #TODO
+
+    # ------------------------- Офункции кнопок работы с тасками
     def dop_button_click(self, bottom_button):
-        "pass"
+        """Функция проверяет, какая кнопка нажата и запускает нужную функцию"""
+        self.root.ids.bottom_button.close_stack()
+        if bottom_button.label.text == "Взять в работу":
+            self.in_my_tasks()
+    def dialog_close(self, *args):
+        self.dialog.dismiss(force=True)
+    def in_my_tasks(self):
+        """
+        Функция нажатия взять в работу
+        :return:
+        """
+        print("Взять в работу"+str(self.card_opens_now))
+        self.my_tasks.append(self.card_opens_now)
+        if not self.dialog:
+            self.dialog = MDDialog(
+                text="Задача назначена вам",
+                buttons=[
+                    MDFlatButton(
+                        text="Окей, чо.", text_color=self.theme_cls.primary_color,
+                    )
+                ],
+            )
+        self.dialog.buttons[0].bind(on_release=self.dialog_close)
+        self.dialog.open()
+        self.callback()
+
+
 
 
 

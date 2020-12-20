@@ -14,8 +14,6 @@ from kivy.core.window import Window
 
 from functions import tab_build
 
-import ctypes
-import time
 
 # Залив текста киви в переменную-------------------------------------------------------
 kivy_code = ''
@@ -41,26 +39,43 @@ class MainApp(MDApp):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self.colors = {"toolbar": [.257, .222, .218, 1],
                        "card_bg": [.730, .695, .707, 1],
                        "text": [1, 1, 1, 1]
                        }
-        self.dialog = None
+
+        self.dialog = None  # Переменная хранения диалогового виджета
         self.card_opens_now = None
-        self.menu = 0 # Переменная бокового меню в тулбаре
+        self.menu = None  # Переменная бокового меню в тулбаре
+
+        # Кнопки для задач снизу справа
         self.bottom_buttons = []
-        self.buttons = {'check': 'Завершить',
-                        'bomb': 'Отмена',
-                        'arm-flex': 'Взять в работу'}
+        self.buttons_all_task = {'check': 'Завершить',
+                                 'bomb': 'Отмена',
+                                 'arm-flex': 'Взять в работу',
+                                 }
+        self.buttons_my_task = {'check': 'Завершить',
+                                'bomb': 'Отмена',
+                                'arm-flex': 'Взять в работу',
+                                'timer': "Начать выполнение"}
+
         self.menu_items = [{"text":"Мои заявки", "callback":self.my_tasks_screen},
                            {"text":"Настройки","callback":self.propities},
                            {"text":"Сменить пользователя","callback":self.login_switch}
                            ]
         # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
-        self.object_list, self.not_sort_objects = None, None
+        self.object_list, self.not_sort_objects, self.my_object_list = None, None, None
         self.my_tasks = []
         self.tab_list =[]
-        self.my_nickname = "NopeFantasy"
+        self.bitrix_ids = {
+            'KABA4OKKABA': '90',
+            'masterbunny': '28',
+            'KodyakovAndrey': '104',
+            'PandaManOne': '88',
+            'NopeFantasy': '114',
+        }
+        self.my_nickname = self.bitrix_ids["NopeFantasy"]
         # --------------------------
 
         Window.size = (600, 600)
@@ -101,8 +116,13 @@ class MainApp(MDApp):
         :return:
         """
         self.object_list, self.not_sort_objects = self.object_list_creator(Card_.bitrix_to_Card_list())
-        self.tab_list = tab_build(self, self.object_list, Tab, scr_widget=self.root.ids.tabs)
-        self.tab_list = tab_build(self, self.not_sort_objects, Tab, scr_widget=self.root.ids.tabs)
+        self.my_object_list = Card_.bitrix_to_Card_list(self.my_nickname)
+
+        print(self.my_object_list)
+
+        tab_build(self, {"Мои заявки": self.my_object_list}, Tab, scr_widget=self.root.ids.tabs_my)
+        tab_build(self, self.object_list, Tab, scr_widget=self.root.ids.tabs)
+        tab_build(self, self.not_sort_objects, Tab, scr_widget=self.root.ids.tabs)
         self.menu = MDDropdownMenu(caller=self.root.ids.menu_button,
                                    items=self.menu_items,
                                    width_mult=4,
@@ -137,7 +157,6 @@ class MainApp(MDApp):
     def my_tasks_screen(self):
         print("Мои заявки")
         self.menu.dismiss()
-        self.tab_list = tab_build(self, {"Мои заявки":self.my_tasks}, Tab, scr_widget=self.root.ids.tabs_my)
         self.root.current = 'my_tasks'
 
     def propities(self):
@@ -182,15 +201,18 @@ class MainApp(MDApp):
         self.root.ids.bottom_button.close_stack()
         if bottom_button.label.text == "Взять в работу":
             self.in_my_tasks()
+
     def dialog_close(self, *args):
         self.dialog.dismiss(force=True)
+
     def in_my_tasks(self):
         """
         Функция нажатия взять в работу
         :return:
         """
-        print("Взять в работу"+str(self.card_opens_now))
+        print("Взять в работу" + str(self.card_opens_now))
         self.my_tasks.append(self.card_opens_now)
+        # ---- Диалоговое окно после нажатия кнопки
         if not self.dialog:
             self.dialog = MDDialog(
                 text="Задача назначена вам",

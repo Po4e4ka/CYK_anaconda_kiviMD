@@ -53,7 +53,7 @@ ScreenManager:
 
             MDFloatingActionButtonSpeedDial:
                 id: bottom_button
-                data: app.buttons
+                data: app.buttons_all_task
                 on_open: app.button_click_open(self)
                 on_close: app.button_click_close(self)
                 rotation_root_button: True
@@ -74,7 +74,7 @@ ScreenManager:
                 id: toolbar_my
                 md_bg_color: app.colors["toolbar"]
                 specific_text_color: app.colors["text"]
-                title: f"Мои_задачи {app.my_nickname}"
+                title: f"Мои задачи {app.my_nickname}"
                 left_action_items: [["arrow-left", lambda x: app.callback()]]
             MDTabs:
                 id: tabs_my

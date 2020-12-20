@@ -5,16 +5,17 @@ import re
 
 
 class Card_:
-    def __init__(self, numb, adr, text, date):
+    def __init__(self, numb, adr, text, date, responsible="86"):
         self.number = numb
         self.adress = adr
         self.text = text
         self.date = date
+        self.responsible = responsible
 
     @classmethod
-    def bitrix_to_Card_list(cls):
+    def bitrix_to_Card_list(cls, my_id="86"):
         bitrix_ = bitrix()
-        task_list = bitrix_.get_group()["tasks"]
+        task_list = bitrix_.get_group(my_id)["tasks"]
         card_list = []
         for i, task in enumerate(task_list):
             card_list.append(Card_(task['id'],

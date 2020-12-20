@@ -1,11 +1,9 @@
 from kivy.lang import Builder
-from kivy.uix.button import Button
-from kivy.uix.dropdown import DropDown
 from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.screenmanager import FadeTransition, ScreenManager
+from kivy.uix.screenmanager import FadeTransition
 
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRaisedButton, MDFloatingActionButtonSpeedDial, MDFlatButton
+from kivymd.uix.button import MDFlatButton
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.tab import MDTabsBase
@@ -81,7 +79,8 @@ class MainApp(MDApp):
                 object_list[card.adress] = [card]
             else:
                 object_list[card.adress].append(card)
-        return object_list, {"Несорт": object_list.pop("Несорт")}
+        return object_list, {"Несорт": object_list.pop("Несорт") if
+                                                        "Несорт" in object_list else [Card_("Non","Non","Non","Non")]}
 
     def build(self):
         """
@@ -137,6 +136,7 @@ class MainApp(MDApp):
     # ------------------------- Методы всплывающего меню --------------------------------------------
     def my_tasks_screen(self):
         print("Мои заявки")
+        self.menu.dismiss()
         self.tab_list = tab_build(self, {"Мои заявки":self.my_tasks}, Tab, scr_widget=self.root.ids.tabs_my)
         self.root.current = 'my_tasks'
 

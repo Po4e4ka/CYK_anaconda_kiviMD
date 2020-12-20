@@ -10,6 +10,7 @@ class Card_:
         self.adress = adr
         self.text = text
         self.date = date
+
     @classmethod
     def bitrix_to_Card_list(cls):
         bitrix_ = bitrix()

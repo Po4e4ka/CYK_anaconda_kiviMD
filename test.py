@@ -27,6 +27,7 @@ with open("kivy_code.kv", 'r', encoding="utf-8") as f:
 class Tab(FloatLayout, MDTabsBase):
     '''Class implementing content for a tab.'''
 
+
 # -------------------------------------------------------------------------------------
 class MainApp(MDApp):
     """
@@ -60,14 +61,14 @@ class MainApp(MDApp):
                                 'arm-flex': 'Взять в работу',
                                 'timer': "Начать выполнение"}
 
-        self.menu_items = [{"text":"Мои заявки", "callback":self.my_tasks_screen},
-                           {"text":"Настройки","callback":self.propities},
-                           {"text":"Сменить пользователя","callback":self.login_switch}
+        self.menu_items = [{"text": "Мои заявки", "callback": self.my_tasks_screen},
+                           {"text": "Настройки", "callback": self.propities},
+                           {"text": "Сменить пользователя", "callback": self.login_switch}
                            ]
         # ---------- Заполнение объект листа. Объект лист имеет в себе все таски
         self.object_list, self.not_sort_objects, self.my_object_list = None, None, None
         self.my_tasks = []
-        self.tab_list =[]
+        self.tab_list = []
         self.bitrix_ids = {
             'KABA4OKKABA': '90',
             'masterbunny': '28',
@@ -94,8 +95,8 @@ class MainApp(MDApp):
                 object_list[card.adress] = [card]
             else:
                 object_list[card.adress].append(card)
-        return object_list, {"Несорт": object_list.pop("Несорт") if
-                                                        "Несорт" in object_list else [Card_("Non","Non","Non","Non")]}
+        return object_list, {
+            "Несорт": object_list.pop("Несорт") if "Несорт" in object_list else [Card_("Non", "Non", "Non", "Non")]}
 
     def build(self):
         """
@@ -212,6 +213,8 @@ class MainApp(MDApp):
         """
         print("Взять в работу" + str(self.card_opens_now))
         self.my_tasks.append(self.card_opens_now)
+        bitrix_ = bitrix()
+        bitrix_.switch_responsible(task=self.card_opens_now.number, responsible=self.my_nickname)
         # ---- Диалоговое окно после нажатия кнопки
         if not self.dialog:
             self.dialog = MDDialog(

@@ -20,10 +20,12 @@ class bitrix:
         except BitrixError as message:
             return 0
 
+
     def switch_responsible(self, task, responsible):  #
         try:
+            print(task, responsible)
             rest = self.bx24.callMethod('tasks.task.update',
-                                        taskId=task,
+                                        taskId=f"{task}",
                                         fields={"RESPONSIBLE_ID": f"{responsible}"}
                                         )
             return rest

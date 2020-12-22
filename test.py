@@ -163,6 +163,17 @@ class MainApp(MDApp):
     def propities(self):
         print("Настройки")
     def login_switch(self):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                text="Выберете свой профиль",
+                buttons=[
+                    MDFlatButton(
+                        text="Окей, чо.", text_color=self.theme_cls.primary_color,
+                    )
+                ],
+            )
+        self.dialog.buttons[0].bind(on_release=self.dialog_close)
+        self.dialog.open()
         print("Поменять логин")
 
     # -------------------------- Открытие заявки ---------------------------------------------------
